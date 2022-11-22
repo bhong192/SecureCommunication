@@ -1,12 +1,20 @@
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import javax.crypto.SecretKey;
+import java.security.*;
 
 public class Sender extends Communicator {
 
     PrivateKey privateKey;
     PublicKey publicKey;
-    // generate RSA key pair (public and private)
+    SecretKey aesKey;
 
+    public void createKeyPair() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        privateKey = keyPair.getPrivate();
+        publicKey = keyPair.getPublic();
+    }
     // encrypt this person's message (txt file) using AES before sending
 
     // encrypt the AES key using the other person's RSA public key
