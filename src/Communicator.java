@@ -2,6 +2,9 @@ import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.*;
 import java.util.Base64;
 import java.util.Scanner;
@@ -19,17 +22,21 @@ public class Communicator {
 //        publicKey = keyPair.getPublic();
 //    }
 
-    private String readFileToString(String fileName){
+    public String readFileToString(String fileName){
         // read file
         File file = new File(getClass().getResource(fileName).getPath());
         String messageText = " ";
 
+        Path filePath = Path.of("src/resources/sender.txt");
         try{
-            Scanner scanner = new Scanner(file);
-            messageText = scanner.nextLine();
+//            Scanner scanner = new Scanner(file);
+//            messageText = scanner.nextLine();
+            messageText = Files.readString(filePath);
         }
         catch (FileNotFoundException e){
             e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return messageText;
     }
