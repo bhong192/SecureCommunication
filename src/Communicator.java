@@ -1,5 +1,6 @@
 import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -80,15 +81,28 @@ public class Communicator {
         return Base64.getDecoder().decode(data);
     }
 
-    public String encryptAESKey(SecretKey aesKey, PublicKey receiverPublicKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    public String encryptKey(SecretKey aesKey, PublicKey receiverPublicKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         String aesKeyEncrypted = " ";
 
-            byte[] aesKeyEncoded = aesKey.getEncoded();
+            byte[] aesKeyEncoded = aesKey.getEncoded(); // getEncoded just turns the key into byte[]
             aesCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-            aesCipher.init(Cipher.ENCRYPT_MODE, receiverPublicKey);
-            byte[] encryptedAESKey = aesCipher.doFinal(aesKeyEncoded);
-            aesKeyEncrypted = encode(encryptedAESKey);
+            aesCipher.init(Cipher.ENCRYPT_MODE, receiverPublicKey); // encrypted with Receiver's RSA public key
+            byte[] encryptedAESKey = aesCipher.doFinal(aesKeyEncoded); // actual encryption
+            aesKeyEncrypted = encode(encryptedAESKey); // save to String for file writing purposes
 
         return aesKeyEncrypted;
+    }
+
+    public static SecretKey decryptRSA(String encryptedKey, PrivateKey receiverPrivateKey) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, NoSuchAlgorithmException {
+        byte[] encryptedKeyBytes = decode(encryptedKey);
+        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+        cipher.init(Cipher.DECRYPT_MODE, receiverPrivateKey);
+        byte[] decryptedKeyBytes = cipher.doFinal(encryptedKeyBytes);
+        String str = new String(decryptedKeyBytes);
+
+        // baeldung stuff
+        SecretKey originalKey = new SecretKeySpec(decryptedKeyBytes, 0, decryptedKeyBytes.length, "AES");
+        return originalKey;
+
     }
 }

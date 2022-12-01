@@ -1,2 +1,1 @@
-This is sender
-AAAAAAAAAAAAAAAAA
+Hello this is Sender. I hope you receive this message well.
