@@ -1,5 +1,6 @@
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
+import javax.crypto.*;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
@@ -9,7 +10,9 @@ import java.util.Scanner;
 public class Receiver extends Communicator {
     PrivateKey privateKey;
     PublicKey publicKey;
-    SecretKey aesKey;
+    Cipher encryptionCipher;
+    Cipher decryptionCipher;
+    Cipher aesCipher;
 
     public void createKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
@@ -20,11 +23,4 @@ public class Receiver extends Communicator {
         publicKey = keyPair.getPublic();
     }
 
-    // encrypt this person's message (txt file) using AES before sending
-
-    // encrypt the AES key using the other person's RSA public key
-
-    // send the encrypted message and AES key together (choose a protocol for MAC)
-
-    // (receiver specific) successfully authenticate, decrypt and read the original message from the sender
 }
