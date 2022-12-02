@@ -71,7 +71,7 @@ public class Communicator {
         return aesKey;
     }
 
-    public String readFileToString(String fileName){
+    public String readSenderMessageToString(String fileName){
         // read file
         File file = new File(getClass().getResource(fileName).getPath());
         String messageText = " ";
@@ -88,18 +88,18 @@ public class Communicator {
         return messageText;
     }
 
-    public String encryptMessage(String fileName, SecretKey aesKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-        // read message file into string
-        String message = readFileToString(fileName);
-
-        // use AES to encrypt
-        byte[] messageInBytes = message.getBytes();
-        encryptionCipher = Cipher.getInstance("AES/GCM/NoPadding");
-        encryptionCipher.init(Cipher.ENCRYPT_MODE, aesKey);
-        byte[] encryptedMessageInBytes = encryptionCipher.doFinal(messageInBytes);
-
-        return encode(encryptedMessageInBytes);
-    }
+//    public String encryptMessage(String fileName, SecretKey aesKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+//        // read message file into string
+//        String message = readFileToString(fileName);
+//
+//        // use AES to encrypt
+//        byte[] messageInBytes = message.getBytes();
+//        encryptionCipher = Cipher.getInstance("AES/GCM/NoPadding");
+//        encryptionCipher.init(Cipher.ENCRYPT_MODE, aesKey);
+//        byte[] encryptedMessageInBytes = encryptionCipher.doFinal(messageInBytes);
+//
+//        return encode(encryptedMessageInBytes);
+//    }
 
     public static String decrypt(String encryptedMessage, SecretKey aesKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
         byte[] messageInBytes = decode(encryptedMessage);

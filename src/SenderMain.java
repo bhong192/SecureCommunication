@@ -4,7 +4,6 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.*;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -13,14 +12,14 @@ import java.security.spec.X509EncodedKeySpec;
 public class SenderMain {
     public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException, InvalidAlgorithmParameterException {
 
-        // TODO: STEP 1: Generate RSA key pairs (2048 bit) for both receiver and sender and write to their key txt files
+        //STEP 1: Generate RSA key pairs (2048 bit) for both receiver and sender and write to their key files
         Receiver receiver = new Receiver();
         receiver.createKeyPair();
 
         Sender sender = new Sender();
         sender.createKeyPair();
 
-        // write Receiver key to .key file
+        // write Receiver keys to file
         try(FileOutputStream fos =  new FileOutputStream(("receiverPublicKey.pub"))){
             fos.write(receiver.publicKey.getEncoded());
             fos.flush();
@@ -34,7 +33,7 @@ public class SenderMain {
             e.printStackTrace();
         }
 
-        // TODO: write Receiver's public key to a .key file and see if you can access it in the Sender Main
+        // write Receiver's private key to a .key file and see if you can access it in the Receiver Main
         try(FileOutputStream fos = new FileOutputStream("receiverPrivateKey.key")){
             fos.write(receiver.privateKey.getEncoded()); //write the byte array of the private key to file
 
@@ -49,9 +48,11 @@ public class SenderMain {
             e.printStackTrace();
         }
 
-        // TODO: test for message AES encryption
+        // STEP 2: Create AES secret key and encrypt Sender's message
         final String aesKey = "RandomKey1011";
-        String senderMessage = sender.readFileToString("receiver.txt");
+        String senderMessage = sender.readSenderMessageToString("sender.txt");
+        System.out.println("Sender Message read from receiver.txt: " + senderMessage);
+//        String senderMessage = sender.readFileToString("sender.txt");
         String senderEncryptedMessage = Communicator.encrypt(senderMessage, aesKey);
 
 //        // TODO: create AES key (symmetric so only one needed for both parties)
@@ -88,7 +89,7 @@ public class SenderMain {
         mac.init(key);
 
         Communicator communicator = new Communicator();
-        String message = communicator.readFileToString("sender.txt");
+        String message = communicator.readSenderMessageToString("sender.txt");
         byte[] messageBytes = message.getBytes();
         byte[] macResultArray = mac.doFinal(messageBytes);
         String macResult = new String(macResultArray);
@@ -106,40 +107,40 @@ public class SenderMain {
             e.printStackTrace();
         }
 
-        // TODO: STEP 6: Have Receiver read the transmission text file to authenticate and decrypt the message
-        // read content from file line by line and store into individual strings
-        try{
-            String readEncryptedMessage = Files.readAllLines(Paths.get("src/resources/transmission.txt")).get(0);
-            String readEncryptedKey = Files.readAllLines(Paths.get("src/resources/transmission.txt")).get(1);
-            String readMAC = Files.readAllLines(Paths.get("src/resources/transmission.txt")).get(2);
-            String readMacKey = Files.readAllLines(Paths.get("src/resources/transmission.txt")).get(3);
-
-            // remove last character due to encoding error (\n)
-            readEncryptedMessage = readEncryptedMessage.substring(0, readEncryptedMessage.length()-1);
-
-            // decrypt message using the AES key
-            // TODO: write function to decrypt the AES key using Receiver's private key and using that result to decrypt the message
-//            SecretKey recoveredAesKey = Communicator.decryptRSA(readEncryptedKey, receiver.privateKey); // original
-            String recoveredAesKey = Communicator.decryptRsaMessage(readEncryptedKey, receiver.privateKey);
-
-            String decryptedMessage = Communicator.decryptAES(readEncryptedMessage, recoveredAesKey);
-//            String decryptedMessage = sender.decrypt(readEncryptedMessage, recoveredAesKey); // aesKey here should be obtained after decrypting it with private key instead
-
-            // verify MAC by recalculating it from the message and comparing it to what was sent
-            SecretKey recoveredMacKey = Communicator.decryptRSA(readMacKey, receiver.privateKey);
-            Mac verificationMAC = Mac.getInstance("HmacMD5");
-            verificationMAC.init(recoveredMacKey);
-
-            byte[] decryptedMessageBytes = decryptedMessage.getBytes();
-            byte[] recalculatedMAC = verificationMAC.doFinal(decryptedMessageBytes);
-            String recalculatedMACString = new String(recalculatedMAC);
-
-            // STEP 7: Print status of verifications (intact message and valid MAC)
-            System.out.println("Decrypted Message: " + decryptedMessage);
-            System.out.println("Valid MAC Status: " + recalculatedMACString.equals(readMAC));
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+//        // TODO: STEP 6: Have Receiver read the transmission text file to authenticate and decrypt the message
+//        // read content from file line by line and store into individual strings
+//        try{
+//            String readEncryptedMessage = Files.readAllLines(Paths.get("src/resources/transmission.txt")).get(0);
+//            String readEncryptedKey = Files.readAllLines(Paths.get("src/resources/transmission.txt")).get(1);
+//            String readMAC = Files.readAllLines(Paths.get("src/resources/transmission.txt")).get(2);
+//            String readMacKey = Files.readAllLines(Paths.get("src/resources/transmission.txt")).get(3);
+//
+//            // remove last character due to encoding error (\n)
+//            readEncryptedMessage = readEncryptedMessage.substring(0, readEncryptedMessage.length()-1);
+//
+//            // decrypt message using the AES key
+//            // TODO: write function to decrypt the AES key using Receiver's private key and using that result to decrypt the message
+////            SecretKey recoveredAesKey = Communicator.decryptRSA(readEncryptedKey, receiver.privateKey); // original
+//            String recoveredAesKey = Communicator.decryptRsaMessage(readEncryptedKey, receiver.privateKey);
+//
+//            String decryptedMessage = Communicator.decryptAES(readEncryptedMessage, recoveredAesKey);
+////            String decryptedMessage = sender.decrypt(readEncryptedMessage, recoveredAesKey); // aesKey here should be obtained after decrypting it with private key instead
+//
+//            // verify MAC by recalculating it from the message and comparing it to what was sent
+//            SecretKey recoveredMacKey = Communicator.decryptRSA(readMacKey, receiver.privateKey);
+//            Mac verificationMAC = Mac.getInstance("HmacMD5");
+//            verificationMAC.init(recoveredMacKey);
+//
+//            byte[] decryptedMessageBytes = decryptedMessage.getBytes();
+//            byte[] recalculatedMAC = verificationMAC.doFinal(decryptedMessageBytes);
+//            String recalculatedMACString = new String(recalculatedMAC);
+//
+//            // STEP 7: Print status of verifications (intact message and valid MAC)
+//            System.out.println("Decrypted Message: " + decryptedMessage);
+//            System.out.println("Valid MAC Status: " + recalculatedMACString.equals(readMAC));
+//        }
+//        catch(Exception e){
+//            e.printStackTrace();
+//        }
     }
 }
