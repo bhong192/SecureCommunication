@@ -44,7 +44,7 @@ public class ReceiverMain {
 
             // verify MAC by recalculating it from the message and comparing it to what was sent
             SecretKey recoveredMacKey = Communicator.decryptRSA(readMacKey, receiverPrivateKey);
-            Mac verificationMAC = Mac.getInstance("HmacMD5");
+            Mac verificationMAC = Mac.getInstance("HmacSHA256");
             verificationMAC.init(recoveredMacKey); // reinitialize MAC object with the recovered MAC key
 
             byte[] decryptedMessageBytes = decryptedMessage.getBytes(); // get bytes of decrypted message

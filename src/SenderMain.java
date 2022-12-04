@@ -49,7 +49,8 @@ public class SenderMain {
         }
 
         // STEP 2: Create AES secret key and encrypt Sender's message
-        final String aesKey = "RandomKey1011";
+        final String aesKey = "ABCDEFGHIJKLMNOP";
+        System.out.println("Number of Bytes in AES Key: " + aesKey.getBytes().length);
         String senderMessage = sender.readSenderMessageToString("sender.txt");
         System.out.println("Sender Message read from receiver.txt: " + senderMessage);
 //        String senderMessage = sender.readFileToString("sender.txt");
@@ -85,7 +86,7 @@ public class SenderMain {
         keyGenerator.init(secureRandom);
         SecretKey key = keyGenerator.generateKey();
 
-        Mac mac = Mac.getInstance("HmacMD5");
+        Mac mac = Mac.getInstance("HmacSHA256");
         mac.init(key);
 
         Communicator communicator = new Communicator();
