@@ -81,9 +81,9 @@ public class SenderMain {
 //        encryptedAESKEY = receiver.encryptKey(aesKey, receiverPublicKey); // encrypt the AES key using the Receiver's public key
 
         // STEP 4: Calculate MAC
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("DES"); // use DES to create symmetric key
-        SecureRandom secureRandom = new SecureRandom();
-        keyGenerator.init(secureRandom);
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256"); // use DES to create symmetric key
+        //SecureRandom secureRandom = new SecureRandom();
+        keyGenerator.init(256);
         SecretKey key = keyGenerator.generateKey();
 
         Mac mac = Mac.getInstance("HmacSHA256");
