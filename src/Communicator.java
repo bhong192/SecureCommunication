@@ -162,6 +162,3 @@ public class Communicator {
         return decryptedMessage;
     }
 }
-
-// issue is that the IVs are not the same across the 2 main methods
-// need to find a way to maintain the same IV for encrypting and decrypting
