@@ -61,15 +61,6 @@ public class Communicator {
 
         return encode(encryptedAesKeyBytes);
     }
-    public static SecretKey generateAESkey() throws NoSuchAlgorithmException {
-        SecretKey aesKey;
-        // generate AES keys
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        keyGenerator.init(192);
-        aesKey = keyGenerator.generateKey();
-
-        return aesKey;
-    }
 
     public String readSenderMessageToString(String fileName){
         // read file
@@ -86,38 +77,6 @@ public class Communicator {
             throw new RuntimeException(e);
         }
         return messageText;
-    }
-
-//    public String encryptMessage(String fileName, SecretKey aesKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-//        // read message file into string
-//        String message = readFileToString(fileName);
-//
-//        // use AES to encrypt
-//        byte[] messageInBytes = message.getBytes();
-//        encryptionCipher = Cipher.getInstance("AES/GCM/NoPadding");
-//        encryptionCipher.init(Cipher.ENCRYPT_MODE, aesKey);
-//        byte[] encryptedMessageInBytes = encryptionCipher.doFinal(messageInBytes);
-//
-//        return encode(encryptedMessageInBytes);
-//    }
-
-    public static String decrypt(String encryptedMessage, SecretKey aesKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-        byte[] messageInBytes = decode(encryptedMessage);
-        decryptionCipher = Cipher.getInstance("AES/GCM/NoPadding");
-        GCMParameterSpec spec = new GCMParameterSpec(128, encryptionCipher.getIV());
-        decryptionCipher.init(Cipher.DECRYPT_MODE,aesKey,spec);
-        byte[] decryptedBytes = decryptionCipher.doFinal(messageInBytes);
-        return new String(decryptedBytes);
-//        byte[] messageInBytes = decode(encryptedMessage);
-//        decryptionCipher = Cipher.getInstance("AES/GCM/NoPadding");
-//        encryptionCipher = Cipher.getInstance("AES/GCM/NoPadding");
-//        encryptionCipher.init(Cipher.ENCRYPT_MODE, aesKey);
-//
-//        System.out.println(encryptionCipher.getIV());
-//        GCMParameterSpec spec = new GCMParameterSpec(128, encryptionCipher.getIV());
-//        decryptionCipher.init(Cipher.DECRYPT_MODE,aesKey,spec);
-//        byte[] decryptedBytes = decryptionCipher.doFinal(messageInBytes);
-//        return new String(decryptedBytes);
     }
 
     public static String encode(byte[] data){

@@ -37,10 +37,8 @@ public class ReceiverMain {
             readEncryptedMessage = readEncryptedMessage.substring(0, readEncryptedMessage.length()-1);
 
             // decrypt message using the AES key
-//            SecretKey recoveredAesKey = Communicator.decryptRSA(readEncryptedKey, receiver.privateKey); // original
             String recoveredAesKey = Communicator.decryptRsaMessage(readEncryptedKey, receiverPrivateKey);
             String decryptedMessage = Communicator.decryptAES(readEncryptedMessage, recoveredAesKey);
-//            String decryptedMessage = sender.decrypt(readEncryptedMessage, recoveredAesKey); // aesKey here should be obtained after decrypting it with private key instead
 
             // verify MAC by recalculating it from the message and comparing it to what was sent
             SecretKey recoveredMacKey = Communicator.decryptRSA(readMacKey, receiverPrivateKey);

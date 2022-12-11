@@ -1,8 +1,1 @@
-You need to implement a program for each role (i.e., sender and receiver). You don’t need to
-include actual socket programming in your code. You can just use local files as the channel to
-simulate the communication in the network. For example, to implement requirement 1 above, we
-let each party locally generate a key pair and save each key in a corresponding file. The other
-party will be able to know the public key by accessing the file. You can create a file called
-“Transmitted_Data”, which can include all data transmitted between sender and receiver, i.e.,
-encrypted message, encrypted AES key, and the MAC. This file is written by the sender and read
-by the receiver.
+Hello this is Sender's message. Hopefully this is validated.
