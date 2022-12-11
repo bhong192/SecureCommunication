@@ -64,7 +64,7 @@ public class SenderMain {
         final String aesKey = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456"; // 32 bytes = 256 bits for key size
         System.out.println("Number of Bytes in AES Key: " + aesKey.getBytes().length + "\n");
         String senderMessage = sender.readSenderMessageToString("sender.txt");
-        System.out.println("Sender Message read from receiver.txt: " + senderMessage + "\n");
+        System.out.println("Sender Message read from sender.txt: " + senderMessage + "\n");
         String senderEncryptedMessage = Communicator.encrypt(senderMessage, aesKey);
 
         String receiverMessage = receiver.readSenderMessageToString("receiver.txt");

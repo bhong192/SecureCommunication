@@ -50,8 +50,8 @@ public class ReceiverMain {
             String recalculatedMACString = new String(recalculatedMAC); // save as String for comparison
 
             // STEP 7: Print status of verifications (intact message and valid MAC)
-            System.out.println("Decrypted Message from Receiver: " + decryptedMessage + "\n");
-            System.out.println("Valid MAC Status from Receiver: " + recalculatedMACString.equals(readMAC)); // check if recalculated MAC matches the one read from transmission.txt
+            System.out.println( "\n" + "Decrypted Message from transmission.txt: " + decryptedMessage);
+            System.out.println("Valid MAC Status: " + recalculatedMACString.equals(readMAC)); // check if recalculated MAC matches the one read from transmission.txt
         }
         catch(Exception e){
             e.printStackTrace();
